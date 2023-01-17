@@ -28,3 +28,9 @@ jobs:
         MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
       run: |
         mlflow run . --env-manager=local -e sample.py
+        
+    - name: Authenticate dagshub
+      env:
+        DAGSHUB_API_KEY: ${{ secrets.DAGSHUB_API_KEY }}
+      run: |
+        dagshub auth ${DAGSHUB_API_KEY}
