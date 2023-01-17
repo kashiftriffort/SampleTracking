@@ -27,7 +27,7 @@ jobs:
       env:
         MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
       run: |
-        mlflow run . -P alpha=0.5 -P beta=0.3 -e sample.py
+        mlflow run . --env-manager=local -e sample.py
 
     - name: Deploy to Dagshub
       env:
