@@ -1,3 +1,2 @@
-pyenv
 dagshub
 mlflow
