@@ -1,30 +1,44 @@
-name: Setup Python
+name: ML Experiment Tracking
 
 on: [push]
 
 jobs:
-  build:
+  run_experiment:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
-      
+
+  
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+        
     - name: Install pyenv
       run: |
         git clone https://github.com/pyenv/pyenv.git ~/.pyenv
-        
+      
     - name: Add pyenv to PATH
       run: echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc
       
     - name: Reload shell
       run: source ~/.bashrc
-      
-    - name: Install Python version
-      run: pyenv install 3.8.9
-      
-    - name: Set global version
-      run: pyenv global 3.8.9
-      
-    - name: Check python version
-      run: python --version
+
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+
+    - name: Run MLflow experiment
+      env:
+        MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
+      run: |
+        mlflow run . -P alpha=0.5 -P beta=0.3 -e sample.py
+
+    - name: Deploy to Dagshub
+      env:
+        DAGSHUB_API_KEY: ${{ secrets.DAGSHUB_API_KEY }}
+      run: |
+        dagshub deploy
