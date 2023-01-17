@@ -1,0 +1,32 @@
+name: ML Experiment Tracking
+
+on: [push]
+
+jobs:
+  run_experiment:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+
+    - name: Install dependencies
+      run: |
+        pip install dagshub mlflow
+
+    - name: Run MLflow experiment
+      env:
+        MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
+      run: |
+        mlflow run . -P alpha=0.5 -P beta=0.3
+
+    - name: Deploy to Dagshub
+      env:
+        DAGSHUB_API_KEY: ${{ secrets.DAGSHUB_API_KEY }}
+      run: |
+        dagshub deploy
