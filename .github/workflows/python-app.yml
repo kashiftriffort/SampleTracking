@@ -33,4 +33,4 @@ jobs:
       env:
         DAGSHUB_API_KEY: ${{ secrets.DAGSHUB_API_KEY }}
       run: |
-        dagshub deploy
+        dagshub model deploy
